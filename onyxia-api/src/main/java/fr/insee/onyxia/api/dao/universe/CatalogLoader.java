@@ -45,14 +45,16 @@ public class CatalogLoader {
     private final ObjectMapper mapperHelm;
 
     private OkHttpClient httpClient;
+    private OkHttpClient unsafeHttpClient;
 
     public CatalogLoader(
             ResourceLoader resourceLoader,
             @Qualifier("helm") ObjectMapper mapperHelm,
-            OkHttpClient httpClient) {
+            OkHttpClient httpClient, OkHttpClient unsafeHttpClient) {
         this.resourceLoader = resourceLoader;
         this.mapperHelm = mapperHelm;
         this.httpClient = httpClient;
+        this.unsafeHttpClient = unsafeHttpClient;
     }
 
     public void updateCatalog(CatalogWrapper cw) {
@@ -69,7 +71,7 @@ public class CatalogLoader {
 
         try (InputStream stream =
                 fetchResource(
-                        cw.getLocation() + "/index.yaml", cw.getUsername(), cw.getPassword())) {
+                        cw.getLocation() + "/index.yaml", cw.getSkipTlsVerify(), cw.getUsername(), cw.getPassword())) {
             Repository repository = mapperHelm.readValue(stream, Repository.class);
 
             repository.setEntries(
@@ -126,14 +128,18 @@ public class CatalogLoader {
         }
     }
 
-    private InputStream fetchResource(String url, String username, String password)
+    private InputStream fetchResource(boolean skipTlsVerify, String url, String username, String password)
             throws IOException {
         if (url.startsWith("http")) {
             Request.Builder builder = new Request.Builder().url(url);
             if (username != null && password != null) {
                 builder = builder.addHeader("Authorization", Credentials.basic(username, password));
             }
-            return httpClient.newCall(builder.build()).execute().body().byteStream();
+            if (skipTlsVerify) {
+                return unsafeHttpClient.newCall(builder.build()).execute().body().byteStream();
+            } else {
+                return httpClient.newCall(builder.build()).execute().body().byteStream();
+            }
         } else {
             return resourceLoader.getResource(url).getInputStream();
         }

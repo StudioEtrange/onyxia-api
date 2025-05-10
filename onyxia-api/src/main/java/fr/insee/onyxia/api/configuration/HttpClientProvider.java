@@ -18,6 +18,30 @@ public class HttpClientProvider {
         return builder.build();
     }
 
+    @Bean
+    public OkHttpClient unsafeHttpClient() {
+        try {
+            TrustManager[] trustAllCerts = new TrustManager[] {
+                new X509TrustManager() {
+                    public void checkClientTrusted(X509Certificate[] chain, String authType) {}
+                    public void checkServerTrusted(X509Certificate[] chain, String authType) {}
+                    public X509Certificate[] getAcceptedIssuers() { return new X509Certificate[0]; }
+                }
+            };
+
+            SSLContext sslContext = SSLContext.getInstance("SSL");
+            sslContext.init(null, trustAllCerts, new SecureRandom());
+            SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+            return new OkHttpClient.Builder()
+                .sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0])
+                .hostnameVerifier((hostname, session) -> true)
+                .build();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public OkHttpClient getClientForRegion(Region region) {
         OkHttpClient.Builder builder =
                 new OkHttpClient.Builder()
