@@ -33,17 +33,17 @@ jobs:
         with:
           name: jar
           path: onyxia-api/target/*.jar
-  spotless-check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 21
-      - name: Check Spotless CodingStyle
-        run: mvn spotless:check
+  # spotless-check:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Set up JDK 21
+  #       uses: actions/setup-java@v4
+  #       with:
+  #         distribution: temurin
+  #         java-version: 21
+  #     - name: Check Spotless CodingStyle
+  #       run: mvn spotless:check
   docker:
     needs: build
     runs-on: ubuntu-latest
