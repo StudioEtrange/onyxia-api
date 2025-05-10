@@ -219,7 +219,7 @@ public class CatalogLoader {
         }
 
         try (InputStream inputStream =
-                fetchResource(absoluteUrl, cw.getUsername(), cw.getPassword())) {
+                fetchResource(absoluteUrl, cw.getSkipTlsVerify(), cw.getUsername(), cw.getPassword())) {
             extractDataFromTgz(inputStream, chart);
         } catch (IOException e) {
             throw new CatalogLoaderException(
