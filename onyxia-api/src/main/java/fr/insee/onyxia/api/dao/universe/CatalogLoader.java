@@ -58,7 +58,7 @@ public class CatalogLoader {
     }
 
     public void updateCatalog(CatalogWrapper cw) {
-        LOGGER.info("updating catalog with id :{} and type {} from {} with {} for skip tls verification", cw.getId(), cw.getLocation(), cw.getType(), Strcw.getSkipTlsVerify());
+        LOGGER.info("updating catalog with id :{} and type {} from {} with {} for skip tls verification", cw.getId(), cw.getLocation(), cw.getType(), cw.getSkipTlsVerify());
         if (cw.getType().equals(Repository.TYPE_HELM)) {
             updateHelmRepository(cw);
         } else {
