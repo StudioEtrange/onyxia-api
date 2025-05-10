@@ -59,7 +59,7 @@ jobs:
         id: docker_meta
         uses: crazy-max/ghaction-docker-meta@v5.7.0
         with:
-          images: inseefrlab/onyxia-api # list of Docker images to use as base name for tags
+          images: studioetrange/onyxia-api # list of Docker images to use as base name for tags
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
