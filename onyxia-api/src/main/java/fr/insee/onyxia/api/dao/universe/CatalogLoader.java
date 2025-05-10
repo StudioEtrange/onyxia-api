@@ -128,7 +128,7 @@ public class CatalogLoader {
         }
     }
 
-    private InputStream fetchResource(boolean skipTlsVerify, String url, String username, String password)
+    private InputStream fetchResource(String url, boolean skipTlsVerify, String username, String password)
             throws IOException {
         if (url.startsWith("http")) {
             Request.Builder builder = new Request.Builder().url(url);
